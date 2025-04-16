@@ -22,7 +22,9 @@ CREATE TABLE IF NOT EXISTS final.scrape_results (
 WITH ranked AS (
     SELECT *,
            ROW_NUMBER() OVER (
-               PARTITION BY category_tag, to_char(scraped_at, 'YYYY-MM-DD"T"HH24')::timestamp, raw_json
+               PARTITION BY category_tag,
+    date_trunc('hour', scraped_at) - (EXTRACT(HOUR FROM scraped_at)::int % 12) * INTERVAL '1 hour',
+    raw_json
                ORDER BY scraped_at
            ) AS rk
     FROM final.adzuna_top_companies_raw
