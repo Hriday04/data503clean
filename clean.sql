@@ -1,4 +1,3 @@
-START TRANSACTION;
 
 START TRANSACTION;
 
@@ -57,8 +56,6 @@ WHERE r.normalized = false;
 UPDATE final.adzuna_top_companies_raw
 SET normalized = true
 WHERE normalized = false;
-
-COMMIT;
 
 
 COMMIT;
