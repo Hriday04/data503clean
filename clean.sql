@@ -38,12 +38,16 @@ WHERE id IN (
 INSERT INTO final.scrapes (category_tag, scraped_at)
 SELECT DISTINCT category_tag, scraped_at
 FROM final.adzuna_top_companies_raw
-WHERE normalized = false;
+WHERE normalized = false
+ON CONFLICT DO NOTHING;
+
 
 INSERT INTO final.companies (canonical_name)
 SELECT DISTINCT jsonb_array_elements(raw_json->'leaderboard')->>'canonical_name' AS canonical_name
 FROM final.adzuna_top_companies_raw
-WHERE normalized = false AND raw_json->'leaderboard' IS NOT NULL;
+WHERE normalized = false AND raw_json->'leaderboard' IS NOT NULL
+ON CONFLICT (canonical_name) DO NOTHING;
+
 
 INSERT INTO final.scrape_results (scrape_id, company_id, job_count)
 SELECT s.scrape_id,
